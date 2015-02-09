@@ -3,25 +3,61 @@ module.exports = function(grunt) {
   grunt.initConfig({
   	copy: {
   		build: {
-  			cwd: 'src',
-        src: [ '*.*' ],
-        dest: 'build',
-        expand: true
+        expand: true,
+        cwd: 'src',
+        src: [ '*.*', '!**/*.jade', '!**/*.sass' ],
+        dest: 'build'
   		}
   	},
+
     clean: {
       build: {
         src: [ 'build' ]
       }
     },
-    watch: {
+
+    jade: {
+      compile: {
+        files: [{
+          expand: true,
+          swd: 'src',
+          src: [ '**/*.jade' ],
+          dest: 'build',
+          ext: '.html'
+        }]
+      }
+    },
+
+    sass: {
+      build: {
+        options: {
+          linenos: true,
+          compress: false
+        },
+        files: [{
+          expand: true,
+          cwd: 'src',
+          src: [ '**/*.sass' ],
+          dest: 'build',
+          ext: '.css'
+        }]
+      }
+    },
+
+    auto_reload: {
       jade: {
         files: 'src/**/*.jade',
-        tasks: [ 'jade' ]
+        tasks: [ 'jade' ],
+        options: {
+          livereload: true
+        }
       },
       sass: {
         files: 'src/**/*.sass',
-        tasks: [ 'sass' ]
+        tasks: [ 'sass' ],
+        options: {
+          livereload: true
+        }
       },
       copy: {
         files: [ 'src/**', '!src/**/*.jade', '!src/**.*.sass' ],
@@ -30,12 +66,10 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('default', [ 'build' ])
+  grunt.registerTask('build', [ 'clean', 'copy', 'jade', 'sass' ]);
 
-  grunt.registerTask(
-    'build',
-    'Compiles all of the assets and copies the files to the build directory.', 
-    [ 'clean', 'copy' ]
-  );
+  grunt.registerTask('default', [ 'build' ]);
+
+  grunt.registerTask('watch', [ 'build' ]);
 
 };
