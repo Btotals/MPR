@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+  require('load-grunt-tasks')(grunt);
   grunt.initConfig({
   	copy: {
   		build: {
@@ -12,6 +13,20 @@ module.exports = function(grunt) {
       build: {
         src: [ 'build' ]
       }
+    },
+    watch: {
+      jade: {
+        files: 'src/**/*.jade',
+        tasks: [ 'jade' ]
+      },
+      sass: {
+        files: 'src/**/*.sass',
+        tasks: [ 'sass' ]
+      },
+      copy: {
+        files: [ 'src/**', '!src/**/*.jade', '!src/**.*.sass' ],
+        tasks: [ 'copy' ]
+      }
     }
   });
 
@@ -22,8 +37,5 @@ module.exports = function(grunt) {
     'Compiles all of the assets and copies the files to the build directory.', 
     [ 'clean', 'copy' ]
   );
-
-  grunt.loadNpmTasks('grunt-contrib-copy');
-  grunt.loadNpmTasks('grunt-contrib-clean');
 
 };
