@@ -1,11 +1,27 @@
 module.exports = function(grunt) {
   require('load-grunt-tasks')(grunt);
+  var livePort = 8080;  //自定义端口号
+  var liveSnippet = require('connect-livereload')({port: livePort});
+  var liveReload = function(connect, options) {
+    return [ liveSnippet, connect.static(options.base), connect.directory(options.base) ];
+  };
   grunt.initConfig({
-  	copy: {
+  	connect: {
+      client: {
+        options: {
+          port: 8888,
+          hostname: 'localhost',
+          base: 'src/',
+          middleware: liveReload
+        }
+      }
+    },
+
+    copy: {
   		build: {
         expand: true,
         cwd: 'src',
-        src: [ '*.*', '!**/*.jade', '!**/*.sass' ],
+        src: [ '*.*', '**/*.jpeg', 'jquery/**.*', '!**/*.jade', '!**/*.sass', '!**/*.ls' ],
         dest: 'build'
   		}
   	},
@@ -20,7 +36,7 @@ module.exports = function(grunt) {
       compile: {
         files: [{
           expand: true,
-          swd: 'src',
+          cwd: 'src',
           src: [ '**/*.jade' ],
           dest: 'build',
           ext: '.html'
@@ -30,10 +46,6 @@ module.exports = function(grunt) {
 
     sass: {
       build: {
-        options: {
-          linenos: true,
-          compress: false
-        },
         files: [{
           expand: true,
           cwd: 'src',
@@ -44,33 +56,56 @@ module.exports = function(grunt) {
       }
     },
 
-    auto_reload: {
+    livescript: {
+      build: {
+        files: [{
+          expand: true,
+          cwd: 'src',
+          src: [ '**/*.ls' ],
+          dest: 'build',
+          ext: '.js'
+        }]
+      }
+    },
+
+    watch: {
       jade: {
         files: 'src/**/*.jade',
-        tasks: [ 'jade' ],
-        options: {
-          livereload: true
-        }
+        tasks: [ 'jade' ]
       },
       sass: {
         files: 'src/**/*.sass',
-        tasks: [ 'sass' ],
-        options: {
-          livereload: true
-        }
+        tasks: [ 'sass' ]
+      },
+      livescript: {
+        files: 'src/**/*.ls',
+        tasks: [ 'livescript' ]
       },
       copy: {
-        files: [ 'src/**', '!src/**/*.jade', '!src/**.*.sass' ],
+        files: [ 'src/**', '!src/**/*.jade', '!src/**/*.sass', '!src/**/*.ls' ],
         tasks: [ 'copy' ]
+      },
+      client: {
+        options: {
+          livereload: true
+        },
+        files: [ 'build/**/*.*' ]
       }
-    }
+    },
+
+    // watch: {
+    //   files: [ 'src/**', 'src/**/*.jade', 'src/**/*.sass', 'src/**/*.ls' ],
+    //   tasks: [ 'build', 'client' ]
+    // }
   });
 
-  grunt.registerTask('build', [ 'clean', 'copy', 'jade', 'sass' ]);
+  // grunt.registerTask('jade', [ 'jade' ]);
 
-  grunt.registerTask('default', [ 'build' ]);
+  // grunt.registerTask('sass', [ 'sass' ]);
 
-  grunt.registerTask('watch', [ 'build' ]);
+  grunt.registerTask('build', [ 'clean', 'copy', 'livescript', 'jade', 'sass' ]);
+
+  grunt.registerTask('default', [ 'build', 'watch' ]);
 
 };
 

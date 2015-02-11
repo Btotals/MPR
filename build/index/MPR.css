@@ -1,0 +1,30 @@
+body {
+  background-image: url(../img/starbuck.jpeg); }
+  body .container {
+    background: #fff;
+    padding: 10px;
+    width: 80%;
+    margin: 10px 10%; }
+    body .container img {
+      width: 100%;
+      height: 300px; }
+  body .selects .to-be-select {
+    width: 80%;
+    margin: 0 10%;
+    float: left; }
+    body .selects .to-be-select img {
+      width: 20%;
+      margin: 6%;
+      border: 2px #fff solid; }
+  body .bottom .re-snap, body .bottom .send-position {
+    float: left;
+    width: 50%;
+    text-align: center;
+    line-height: 50px;
+    height: 50px; }
+  body .bottom .re-snap {
+    background: #ccc; }
+  body .bottom .send-position {
+    background: #ff0; }
+
+/*# sourceMappingURL=MPR.css.map */
